@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include "kv_store.hpp"
+#include "table.hpp"
 
 using namespace std;
 
