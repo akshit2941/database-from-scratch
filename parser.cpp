@@ -34,3 +34,42 @@ vector<string> Parser::tokenize(const string& input){
 
     return tokens;
 }
+
+ParsedCommand Parser::parse(const string& input){
+    ParsedCommand result;
+    auto tokens = tokenize(input);
+
+    if(tokens.empty()){
+        result.commandType = CommandType::UNKNOWN;
+        return result;
+    }
+
+    result.commandType = identifyCommand(tokens[0]);
+
+    if(result.commandType == CommandType::CREATE){
+        if(tokens.size() < 4 || tokens[1]!="TABLE") return result;
+
+        result.tableName = tokens[2];
+
+        string rawCols;
+        size_t open = input.find('(');
+        size_t closed = input.find(')');
+
+        if(open == string::npos || closed == string::npos) return result;
+
+        rawCols = input.substr(open+1, closed-open+1);
+        stringstream ss(rawCols);
+        string segment;
+
+        while(getline(ss, segment, ',')){
+            stringstream pair(segment);
+            string name, dtype;
+            pair >> name >> dtype;
+
+            ColumnDef col;
+            col.name = name;
+            col.type = identifyDataType(dtype);
+            result.columns.push_back(col);
+        }
+    }
+}
