@@ -71,5 +71,29 @@ ParsedCommand Parser::parse(const string& input){
             col.type = identifyDataType(dtype);
             result.columns.push_back(col);
         }
+    }else if(result.commandType == CommandType::INSERT){
+        if(tokens.size() < 5 || tokens[1]!= "INTO" || tokens[3]!= "VALUES") return result;
+
+        result.tableName = tokens[2];
+        
+        size_t open = input.find('(');
+        size_t close = input.find(')');
+
+        if(open == string::npos || close == string::npos) return result;
+
+        string rawValues = input.substr(open+1, close-open-1);
+        stringstream ss(rawValues);
+        string value;
+
+        while(getline(ss,value,',')){
+            value.erase(remove_if(value.begin(), value.end(), ::isspace), value.end());
+            result.values.push_back(value);
+        }
+    }else if(result.commandType == CommandType::SELECT){
+        if(tokens.size()>=4 && tokens[1]=="*" && tokens[2]=="FROM"){
+            result.tableName = tokens[3];
+        }
     }
+
+    return result;
 }
