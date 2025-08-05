@@ -16,6 +16,10 @@ public:
     string get(const string& key);
 
     void remove(const string& key);
+
+    void loadFromFile(const string& filePath);
+
+    void appendToFile(const string& filePath, const string& op, const string& key, const string& value="");
 };
 
 #endif

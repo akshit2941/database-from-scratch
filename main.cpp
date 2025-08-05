@@ -8,6 +8,9 @@ using namespace std;
 int main()
 {
     KeyValueStore kv;
+    string dbFile = "data.db";
+
+    kv.loadFromFile(dbFile);
 
     string input;
     cout << "Welcome to the Db\n";
@@ -22,7 +25,10 @@ int main()
         string command;
         iss >> command;
 
-        if (command == "put" || "add")
+        for (auto &ch : command)
+            ch = tolower(ch);
+
+        if (command == "put" || command == "add")
         {
             string key, value;
             iss >> key >> ws;
@@ -32,12 +38,13 @@ int main()
             string keyValue = kv.get(key);
             if (!keyValue.empty())
             {
-                cout << "Value already exist wiht " << key << "!\n";
+                cout << "Value already exist with " << key << "!\n";
                 cout << "Try changing the key!\n";
             }
             else
             {
                 kv.put(key, value);
+                kv.appendToFile(dbFile, "PUT", key, value);
                 cout << "Added " << key << " : " << value << "\n";
             }
         }
@@ -63,6 +70,7 @@ int main()
             if (!value.empty())
             {
                 kv.remove(key);
+                kv.appendToFile(dbFile, "REMOVE", key);
                 cout << "REMOVED : " << value << "\n";
             }
             else
@@ -80,4 +88,5 @@ int main()
             cout << "INVALID COMMAND!, Please use put, get, remove, exit\n";
         }
     }
+    return 0;
 }
