@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 #include "kv_store.hpp"
-#include "table.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
@@ -10,6 +10,8 @@ int main()
 {
     KeyValueStore kv;
     string dbFile = "data.db";
+
+    Parser parser;
 
     kv.loadFromFile(dbFile);
 
