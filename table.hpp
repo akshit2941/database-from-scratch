@@ -41,4 +41,4 @@ public:
 
     bool insert(const Row& row, string& errorMessage);
     void display() const;
-}
+};
